@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>web RTC 测试</title>
+
+    <style>
+        .booth {
+            width: 400px;
+            background-color: #ccc;
+            border: 10px solid #ddd;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div class="booth">
+    <video width="400" height="300" id="video"></video>
+    <button id="tack">snap shot</button>
+    <canvas id="canvas" width="400" height="300"></canvas>
+    <img src="" id="img">
+</div>
+
+<script>
+    var video = document.getElementById('video'),
+        canvas = document.getElementById('canvas'),
+        snap = document.getElementById('tack'),
+        img = document.getElementById('img'),
+        vendorUrl = window.URL || window.webkitURL;
+
+    // 媒体对象
+    navigator.getMedia = navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia;
+
+    navigator.getMedia({
+        video: true, // 使用摄像头
+        audio: false
+    }, function (stream) {
+        console.log(stream);
+        video.src = vendorUrl.createObjectURL(stream);
+        video.play();
+    }, function (error) {
+        console.log(error);
+    });
+
+    snap.addEventListener('click', function () {
+        // 绘制 canvas 图形
+        canvas.getContext('2d').drawImage(video, 0, 0, 400, 300);
+
+        // 把canvas图像转换为img图片
+        img.src = canvas.toDataURL('image/png');
+    });
+</script>
+</body>
+</html>
